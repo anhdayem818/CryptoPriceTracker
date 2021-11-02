@@ -1,5 +1,5 @@
 
-import React, {useState, useMemo, useRef } from 'react';
+import React, {useState, useMemo, useRef, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -24,6 +24,7 @@ import theme from './assets/themes';
 import ListItem from './components/ListItem';
 import sampleData from './data/sampleData';
 import Chart from './components/Chart';
+import { getMarketData } from './services/crytoService';
 
 const ListHeader=()=>{
   return(
@@ -59,7 +60,19 @@ const App=() => {
   }
 
   const [selectedCoinData, setSelectedCoinData]= useState();
+  const [data, setData] = useState([])
 
+  useEffect(() => {
+    const fetchMarketData= async ()=>{
+      const marketData = await getMarketData();
+      setData(marketData)
+    }
+    fetchMarketData();
+    return () => {
+      // cleanup
+      
+    }
+  }, [])
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.sectionContainer}>
@@ -70,7 +83,7 @@ const App=() => {
           
         <FlatList 
           keyExtractor={(item)=> item.id }
-          data={sampleData}
+          data={data}
           renderItem={({item})=>{
             return(
               <ListItem 
