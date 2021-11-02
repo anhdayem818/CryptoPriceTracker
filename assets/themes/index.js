@@ -45,6 +45,28 @@ const theme = {
     m: 112,
     l: 123,
   },
+  shadows:{
+    boxShadownBottom: {
+      shadowColor: "#000",
+      shadowOffset:{
+        width: 0,
+        height: -4,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 1,
+      elevation: 5,
+    },
+    boxShadownTop: {
+      shadowColor: "#000",
+      shadowOffset:{
+        width: 0,
+        height: -4,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    }
+  }
 }
 
 export default theme;

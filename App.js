@@ -23,7 +23,7 @@ import theme from './assets/themes';
 
 import ListItem from './components/ListItem';
 import sampleData from './data/sampleData';
-
+import Chart from './components/Chart';
 
 const ListHeader=()=>{
   return(
@@ -53,16 +53,19 @@ const App=() => {
     }, 3000);
   };
 
-  const openModalSheet= () =>{
+  const openModalSheet= (item) =>{
+    setSelectedCoinData(item)
     bottomSheetModalRef.current.present();
   }
+
+  const [selectedCoinData, setSelectedCoinData]= useState();
 
   return (
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.sectionContainer}>
         <StatusBar
           backgroundColor="transparent"
-          translucent={true}
+          
         />
           
         <FlatList 
@@ -76,7 +79,7 @@ const App=() => {
                 symbol={item.symbol}
                 currentPrice={item.current_price}
                 changePricePercent24h={item.price_change_percentage_24h}
-                onPress={()=> {openModalSheet()} }
+                onPress={()=> {openModalSheet(item)} }
               />    
             )
           }}
@@ -94,11 +97,22 @@ const App=() => {
         ref={bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
-        style={styles.bottemSheet}
-      >
-        <View style={styles.contentContainer}>
-          <Text>Awesome 🎉</Text>
-        </View>
+        style={styles.bottomSheet}
+      > 
+        {
+          selectedCoinData ? (
+            <Chart 
+              name={selectedCoinData.name}
+              logo={selectedCoinData.image}
+              symbol={selectedCoinData.symbol}
+              currentPrice={selectedCoinData.current_price}
+              changePricePercent24h={selectedCoinData.price_change_percentage_24h}
+              sparklineIn7d={selectedCoinData.sparkline_in_7d.price}
+
+            />
+          ) : ""
+        }
+        
       </BottomSheetModal>
 
     </BottomSheetModalProvider>
@@ -133,15 +147,16 @@ const styles = StyleSheet.create({
     marginHorizontal: theme.spacing.m,
     borderBottomWidth: 2,
   },
-  bottemSheet:{
-    shadowColor: theme.colors.white,
-    shadowOffset:{
+  bottomSheet:{
+    borderRadius: theme.borderRadius.m,
+    shadowColor: theme.colors.black,
+    shadowOffset: {
       width: 0,
-      height: -4,
+      height: -4
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 6,
   },
 
 });
