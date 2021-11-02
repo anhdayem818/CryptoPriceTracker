@@ -7,7 +7,7 @@ const ListItem=(props)=>{
   const {name, symbol, currentPrice, changePricePercent24h, logo} = props
   const priceChangeColor = changePricePercent24h > 0 ? "#34C759" : "#FF3830";
   return(
-    <TouchableOpacity>
+    <TouchableOpacity onPress={props.onPress}>
       <View style={styles.itemWrapper}>
         <View style={styles.leftWrapper}>
           <Image source={ {uri: logo}}
