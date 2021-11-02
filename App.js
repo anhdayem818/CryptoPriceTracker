@@ -1,13 +1,5 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
 
-import React from 'react';
-import type {Node} from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,84 +8,84 @@ import {
   Text,
   useColorScheme,
   View,
+  Divider,
+  FlatList,
+  RefreshControl,
+
 } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import theme from './assets/themes';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import ListItem from './components/ListItem';
+import sampleData from './data/sampleData';
 
-const Section = ({children, title}): Node => {
+
+const ListHeader=()=>{
+  return(
+    <>
+      <Text style={styles.titleText}>Markets</Text>
+      <View style={styles.divider}></View>
+    </>
+  )
+}
+
+
+const App=() => {
+
   const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [refreshing, setRefreshing] = useState(false)
+
+  const _onRefresh = () => {
+    console.log('_onRefresh')
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 3000);
+  };
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.sectionContainer}>
+      <StatusBar
+        backgroundColor="transparent"
+        translucent={true}
+      />
+         
+      <FlatList 
+        keyExtractor={(item)=> item.id }
+        data={sampleData}
+        renderItem={({item})=>{
+          return(
+            <ListItem 
+              name={item.name}
+              logo={item.image}
+              symbol={item.symbol}
+              currentPrice={item.current_price}
+              changePricePercent24h={item.price_change_percentage_24h}
+            />    
+          )
+        }}
+        refreshControl={
+          <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={_onRefresh}
+              tintColor="#F8852D"/>
+      }
+        ListHeaderComponent={<ListHeader/>}
+      />
+
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+    flex: 1,
+    paddingTop: 0,
+
   },
   sectionTitle: {
     fontSize: 24,
@@ -107,6 +99,16 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  titleText:{
+  ...theme.textVariants.h1,
+  marginVertical: theme.spacing.m,
+  marginHorizontal: theme.spacing.m
+  },
+  divider:{
+    borderBottomColor: theme.colors.gray,
+    marginHorizontal: theme.spacing.m,
+    borderBottomWidth: 2,
+  }
 });
 
 export default App;
